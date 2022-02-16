@@ -46,9 +46,49 @@ add_filter('wp_travel_settings_values', function ($settings) {
 });
 
 /**
+ * Save configuration values.
+ *
+ * @param array $settings WP Travel config values.
+ * @param array $request Requested values.
+ * 
+ * @return array
+ */
+add_filter('wp_travel_block_before_save_settings', function ($settings, $request) {
+    return array_merge($settings, [
+        'payment_option_mobbex' => !empty($request['payment_option_mobbex']) ? 'yes'                           : null,
+        'mobbex_test_mode'      => !empty($request['mobbex_test_mode'])      ? 'yes'                           : null,
+        'mobbex_api_key'        => !empty($request['mobbex_api_key'])        ? $request['mobbex_api_key']      : null,
+        'mobbex_access_token'   => !empty($request['mobbex_access_token'])   ? $request['mobbex_access_token'] : null,
+    ]);
+}, 10, 2);
+
+/**
  * Enqueue admin module scripts.
  */
 add_action('admin_enqueue_scripts', function () {
     if (WP_Travel::is_page('settings', true))
-        wp_enqueue_script('mbbx-hooks-js', plugin_dir_url(__FILE__) . 'assets/js/settings.js');
+        wp_enqueue_script('mbbx-settings-js', WPT_MOBBEX_URL . 'assets/js/settings.js', null, WPT_MOBBEX_VERSION);
+});
+
+/**
+ * Add customer identification field to checkout billing form.
+ * 
+ * @param array $fields Current billing fields.
+ * 
+ * @return array
+ */
+add_action('wp_travel_checkout_billing_fields', function ($fields) {
+    return array_merge($fields, [
+        'billing_dni' => [
+            'type'        => 'text',
+            'label'       => __('DNI', 'wp-travel-mobbex'),
+            'name'        => 'billing_dni',
+            'id'          => 'billing_dni',
+            'priority'    => 10,
+            'validations' => [
+                'required'  => true,
+                'maxlength' => '30',
+            ],
+        ],
+    ]);
 });
