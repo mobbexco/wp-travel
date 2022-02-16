@@ -15,6 +15,49 @@
 
 defined('ABSPATH') || exit;
 
+// Define constants
+define('WPT_MOBBEX_VERSION', '1.0.0');
+define('WPT_MOBBEX_PATH', plugin_dir_path(__FILE__));
+define('WPT_MOBBEX_URL', plugin_dir_url(__FILE__));
+
+// Include base classes
+require_once WPT_MOBBEX_PATH . 'includes/lib/class-api.php';
+require_once WPT_MOBBEX_PATH . 'includes/lib/class-platform.php';
+require_once WPT_MOBBEX_PATH . 'includes/lib/class-exception.php';
+
+// Load module classes
+require_once WPT_MOBBEX_PATH . 'includes/lib/modules/class-checkout.php';
+
+// Include helpers
+require_once WPT_MOBBEX_PATH . 'includes/helper/class-booking-helper.php';
+
+// Include controllers
+require_once WPT_MOBBEX_PATH . 'controllers/payment.php';
+
+/**
+ * Init plugin.
+ */
+add_action('plugins_loaded', function () {
+    $settings = [];
+
+    // Get current module settings
+    foreach (wptravel_get_settings() as $key => $value)
+        if (strpos($key, 'mobbex_') === 0)
+            $settings[str_replace('mobbex_', '', $key)] = $value;
+
+    // Set platform information
+    \Mobbex\Platform::init('wp_travel', WPT_MOBBEX_VERSION, [
+        'wordpress' => get_bloginfo('version'),
+        'wp_travel' => WP_TRAVEL_VERSION,
+    ], $settings);
+
+    // Init api conector
+    \Mobbex\Api::init();
+
+    // Init controllers
+    new \WPT\Mobbex\Controllers\Payment;
+});
+
 /**
  * Add gateway to wp-travel list.
  *
@@ -27,7 +70,6 @@ add_filter('wp_travel_payment_gateway_lists', function ($gateways) {
         'mobbex' => 'Mobbex',
     ], $gateways);
 });
-
 
 /**
  * Set module options default values.
