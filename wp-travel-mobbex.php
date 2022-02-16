@@ -134,3 +134,27 @@ add_action('wp_travel_checkout_billing_fields', function ($fields) {
         ],
     ]);
 });
+
+/**
+ * Add own payment status to wp-travel list.
+ * 
+ * @param array $status All current wp-travel status.
+ * 
+ * @return array
+ */
+add_filter('wp_travel_payment_status_list', function ($status) {
+    return array_merge($status, [
+        'waiting' => [
+            'color' => '#e5cd00',
+            'text'  => __('En espera', 'wp-travel-mobbex'),
+        ],
+        'failed'  => [
+            'color' => '#dd332f',
+            'text'  => __('Pago fallido', 'wp-travel-mobbex'),
+        ],
+        'suspected_fraud' => [
+            'color' => '#ff0600',
+            'text'  => __('Sospecha de fraude', 'wp-travel-mobbex'),
+        ],
+    ]);
+});

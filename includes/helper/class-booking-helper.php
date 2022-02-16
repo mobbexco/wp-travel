@@ -18,13 +18,16 @@ final class Booking
     {
         global $wt_cart;
 
-        // Sanitize request, get traveller data and generate token for urls
+        // Sanitize request and get traveller data
         $request   = \WP_Travel::get_sanitize_request('request');
         $traveller = $this->get_traveller_data($request);
-        $token     = md5(\Mobbex\Platform::$settings['api_key'] . '|' . \Mobbex\Platform::$settings['access_token']);
+
+        // Generate tokens for urls
+        $token = md5(\Mobbex\Platform::$settings['api_key'] . '|' . \Mobbex\Platform::$settings['access_token']);
+        $nonce = isset($request['_nonce']) ? $request['_nonce'] : null;
 
         // Format cart items
-        foreach ($wt_cart->getItems() as $item) // TODO: Test this
+        foreach ($wt_cart->getItems() as $item)
             $items[] = [
                 'total'       => $is_partial ? $item['trip_price_partial'] : $item['trip_price'],
                 'quantity'    => 1,
@@ -50,8 +53,8 @@ final class Booking
         return new \Mobbex\Checkout(
             $booking_id,
             $is_partial ? $wt_cart->get_total()['total_partial'] : $wt_cart->get_total()['total'],
-            add_query_arg(compact('booking_id', 'token'), get_rest_url(null, 'wpt/mobbex/payment/callback')),
-            add_query_arg(compact('booking_id', 'token'), get_rest_url(null, 'wpt/mobbex/payment/webhook')),
+            add_query_arg(compact('booking_id', 'token', 'nonce'), get_rest_url(null, 'wpt/mobbex/payment/callback')),
+            add_query_arg(compact('booking_id', 'token', 'nonce'), get_rest_url(null, 'wpt/mobbex/payment/webhook')),
             $items,
             [],
             $customer
@@ -77,7 +80,7 @@ final class Booking
     }
 
     /**
-     * Get first traveller data from a booking request.
+     * Get lead traveller data from a booking request.
      * 
      * @param array $request Santinized form data.
      * 
@@ -96,7 +99,7 @@ final class Booking
         reset($first_names);
         $first_key = key($first_names);
     
-        // Return data from the first traveller of first trip
+        // Return data from the lead traveller of first trip
         return [
             'first_name'     => isset($first_names[$first_key][0])   ? $first_names[$first_key][0]   : null,
             'last_name'      => isset($last_names[$first_key][0])    ? $last_names[$first_key][0]    : null,
