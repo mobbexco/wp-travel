@@ -7,16 +7,16 @@ defined('ABSPATH') || exit;
 final class Platform
 {
     /** Name of current platform */
-    public $name;
+    public static $name;
 
     /** Version of Mobbex plugin */
-    public $version;
+    public static $version;
 
     /** Key-Value array with current extensions and their versions */
-    public $extensions = [];
+    public static $extensions = [];
 
     /** Default settings values */
-    public $settings = [
+    public static $settings = [
         'api_key'      => null,
         'access_token' => null,
         'test_mode'    => false,

@@ -6,16 +6,16 @@ defined('ABSPATH') || exit;
 
 class Api
 {
-    public $ready = false;
+    public static $ready = false;
 
     /** Mobbex API base URL */
-    public $api_url = 'https://api.mobbex.com/p/';
+    public static $api_url = 'https://api.mobbex.com/p/';
 
     /** Commerce API Key */
-    private $api_key;
+    private static $api_key;
 
     /** Commerce Access Token */
-    private $access_token;
+    private static $access_token;
 
     /**
      * Set Mobbex credentails.
@@ -23,11 +23,11 @@ class Api
      * @param string $api_key Commerce API Key.
      * @param string $access_token Commerce Access Token.
      */
-    public static function init($api_key, $access_token)
+    public static function init($api_key = null, $access_token = null)
     {
         self::$api_key      = $api_key      ?: \Mobbex\Platform::$settings['api_key'];
         self::$access_token = $access_token ?: \Mobbex\Platform::$settings['access_token'];
-        self::$ready        = $api_key && $access_token;
+        self::$ready        = self::$api_key && self::$access_token;
     }
 
     /**

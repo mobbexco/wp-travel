@@ -51,7 +51,8 @@ class Checkout
      *     @type string $identification
      *     @type string|null $phone
      *     @type string|int|null $uid
-     *     @type string|null $address Street name with house number.
+     *     @type string|null $address Street name.
+     *     @type string|null $addressNumber House number.
      *     @type string|null $zipCode Postal|ZIP code.
      *     @type string|null $state
      *     @type string|null $country Country ISO 3166-1 alpha-3 code.
