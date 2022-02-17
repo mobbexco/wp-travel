@@ -34,6 +34,9 @@ require_once WPT_MOBBEX_PATH . 'includes/helper/class-booking-helper.php';
 // Include controllers
 require_once WPT_MOBBEX_PATH . 'controllers/payment.php';
 
+// Include external module classes
+require_once WPT_MOBBEX_PATH . 'updater/plugin-update-checker.php';
+
 /**
  * Init plugin.
  */
@@ -56,6 +59,10 @@ add_action('plugins_loaded', function () {
 
     // Init controllers
     new \WPT\Mobbex\Controllers\Payment;
+
+    // Init update checker
+    $updater = \Puc_v4_Factory::buildUpdateChecker('https://github.com/mobbexco/wp-travel/', __FILE__, 'wp-travel-mobbex');
+    $updater->getVcsApi()->enableReleaseAssets();
 });
 
 /**
