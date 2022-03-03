@@ -46,7 +46,6 @@ final class Booking
             'zipCode'        => $traveller['postal'],
             'country'        => $this->convert_country_code($traveller['country']),
             'addressNotes'   => $traveller['note'],
-            'userAgent'      => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null,
         ];
 
         // Create checkout and return

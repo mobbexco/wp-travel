@@ -147,7 +147,6 @@ class Checkout
     {
         $reference = [
             \Mobbex\Platform::$name . '_id:' . $id,
-            'time:' . time()
         ];
 
         // Add reseller id
