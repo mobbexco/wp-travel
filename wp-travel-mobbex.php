@@ -35,7 +35,7 @@ require_once WPT_MOBBEX_PATH . 'includes/helper/class-booking-helper.php';
 require_once WPT_MOBBEX_PATH . 'controllers/payment.php';
 
 // Include external module classes
-require_once WPT_MOBBEX_PATH . 'updater/plugin-update-checker.php';
+require_once WPT_MOBBEX_PATH . 'includes/ext/updater/plugin-update-checker.php';
 
 /**
  * Init plugin.
