@@ -106,7 +106,7 @@ final class Payment
         if ($_REQUEST['token'] != md5(\Mobbex\Platform::$settings['api_key'] . '|' . \Mobbex\Platform::$settings['access_token']))
             die('Error: Missmatch token.');
 
-        $data = isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json' ? json_decode(file_get_contents('php://input'), true) : $_REQUEST['data'];
+        $data = isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json' ? json_decode(file_get_contents('php://input'), true)['data'] : $_REQUEST['data'];
         
         // Save transaction data
         update_post_meta($_REQUEST['booking_id'], 'mbbx_transaction', $data);
