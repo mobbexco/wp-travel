@@ -101,7 +101,7 @@ final class Payment
         $request = isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json' ? json_decode(file_get_contents('php://input'), true) : $_REQUEST;
 
         // Exit if webhook is not correctly formated
-        if (empty($_REQUEST['booking_id']) || empty($_REQUEST['token']) || empty($_REQUEST['data']))
+        if (empty($_REQUEST['booking_id']) || empty($_REQUEST['token']) || empty($request['data']))
             die('Error: Invalid webhook format.');
 
         // Exit if provided token does not match
