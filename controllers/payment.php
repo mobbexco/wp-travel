@@ -98,19 +98,23 @@ final class Payment
      */
     public function webhook()
     {
+        $request = isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json' ? json_decode(file_get_contents('php://input'), true) : $_REQUEST;
+
         // Exit if webhook is not correctly formated
-        if (empty($_REQUEST['booking_id']) || empty($_REQUEST['token']) || empty($_REQUEST['data']))
+        if (empty($_REQUEST['booking_id']) || empty($_REQUEST['token']) || empty($request['data']))
             die('Error: Invalid webhook format.');
 
         // Exit if provided token does not match
         if ($_REQUEST['token'] != md5(\Mobbex\Platform::$settings['api_key'] . '|' . \Mobbex\Platform::$settings['access_token']))
             die('Error: Missmatch token.');
 
+        $data = $request['data'];
+        
         // Save transaction data
-        update_post_meta($_REQUEST['booking_id'], 'mbbx_transaction', $_REQUEST['data']);
+        update_post_meta($_REQUEST['booking_id'], 'mbbx_transaction', $data);
 
         // Get payment status
-        $code = $_REQUEST['data']['payment']['status']['code'];
+        $code = $data['payment']['status']['code'];
 
         if ($code == 2 || $code == 3 || $code == 100 || $code == 201) {
             $status = 'waiting';
@@ -122,18 +126,18 @@ final class Payment
 
         // Format data to show in booking widget
         $widget_data = [
-            'ID del checkout'         => isset($_REQUEST['data']['checkout']['uid']) ? $_REQUEST['data']['checkout']['uid'] : 'N/A',
-            'URL al cupon'            => 'https://mobbex.com/console/' . $_REQUEST['data']['entity']['uid'] . '/operations/?oid=' . $_REQUEST['data']['payment']['id'],
-            'Moeda utilizada'         => isset($_REQUEST['data']['checkout']['currency']) ? $_REQUEST['data']['checkout']['currency'] : 'N/A',
-            'ID de la transacción'    => isset($_REQUEST['data']['payment']['id']) ? $_REQUEST['data']['payment']['id'] : 'N/A',
-            'Monto de la transacción' => isset($_REQUEST['data']['payment']['total']) ? wptravel_get_currency_symbol() . ' ' . $_REQUEST['data']['payment']['total'] : 'N/A',
-            'Medio de pago'           => isset($_REQUEST['data']['payment']['source']['name']) ? $_REQUEST['data']['payment']['source']['name'] : 'N/A',
-            'Número de tarjeta'       => isset($_REQUEST['data']['payment']['source']['number']) ? $_REQUEST['data']['payment']['source']['number'] : 'N/A',
-            'Plan elegido'            => isset($_REQUEST['data']['payment']['source']['installment']['description']) ? $_REQUEST['data']['payment']['source']['installment']['description'] : 'N/A',
+            'ID del checkout'         => isset($data['checkout']['uid']) ? $data['checkout']['uid'] : 'N/A',
+            'URL al cupon'            => 'https://mobbex.com/console/' . $data['entity']['uid'] . '/operations/?oid=' . $data['payment']['id'],
+            'Moeda utilizada'         => isset($data['checkout']['currency']) ? $data['checkout']['currency'] : 'N/A',
+            'ID de la transacción'    => isset($data['payment']['id']) ? $data['payment']['id'] : 'N/A',
+            'Monto de la transacción' => isset($data['payment']['total']) ? wptravel_get_currency_symbol() . ' ' . $data['payment']['total'] : 'N/A',
+            'Medio de pago'           => isset($data['payment']['source']['name']) ? $data['payment']['source']['name'] : 'N/A',
+            'Número de tarjeta'       => isset($data['payment']['source']['number']) ? $data['payment']['source']['number'] : 'N/A',
+            'Plan elegido'            => isset($data['payment']['source']['installment']['description']) ? $data['payment']['source']['installment']['description'] : 'N/A',
         ];
 
         // Update payment data
-        wptravel_update_payment_status($_REQUEST['booking_id'], $_REQUEST['data']['payment']['total'], $status, $widget_data, '_mobbex_args');
+        wptravel_update_payment_status($_REQUEST['booking_id'], $data['payment']['total'], $status, $widget_data, '_mobbex_args');
 
         // Send emails and clear cart
         do_action( 'wp_travel_after_successful_payment', $_REQUEST['booking_id']);
