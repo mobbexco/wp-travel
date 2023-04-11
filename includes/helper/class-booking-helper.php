@@ -1,6 +1,6 @@
 <?php
 
-namespace WPT\Mobbex\Helper;
+namespace Mobbex\WPT\Helper;
 
 defined('ABSPATH') || exit;
 
@@ -12,7 +12,7 @@ final class Booking
      * @param int $booking_id
      * @param bool $is_partial True if the payment will to be partial.
      * 
-     * @return \Mobbex\Checkout
+     * @return Mobbex\Modules\Checkout
      */
     public function create_checkout($booking_id, $is_partial = false)
     {
@@ -49,7 +49,7 @@ final class Booking
         ];
 
         // Create checkout and return
-        return new \Mobbex\Checkout(
+        return new \Mobbex\Modules\Checkout(
             $booking_id,
             $is_partial ? $wt_cart->get_total()['total_partial'] : $wt_cart->get_total()['total'],
             add_query_arg(compact('booking_id', 'token', 'nonce'), get_rest_url(null, 'wpt/mobbex/payment/callback')),
