@@ -4,3 +4,12 @@
 node_modules
 package.json
 package-lock.json
+/vendor
+
+copy.js
+build.js
+build.sh
+
+composer.lock
+node_modules
+/vendor/
