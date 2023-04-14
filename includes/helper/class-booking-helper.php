@@ -1,6 +1,6 @@
 <?php
 
-namespace WPT\Mobbex\Helper;
+namespace Mobbex\WPT\Helper;
 
 defined('ABSPATH') || exit;
 
