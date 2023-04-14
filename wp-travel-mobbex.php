@@ -20,13 +20,13 @@ define('WPT_MOBBEX_VERSION', '1.0.0');
 define('WPT_MOBBEX_PATH', plugin_dir_path(__FILE__));
 define('WPT_MOBBEX_URL', plugin_dir_url(__FILE__));
 
-// Include base classes
-require_once WPT_MOBBEX_PATH . 'includes/lib/class-api.php';
-require_once WPT_MOBBEX_PATH . 'includes/lib/class-platform.php';
-require_once WPT_MOBBEX_PATH . 'includes/lib/class-exception.php';
+require_once 'vendor/autoload.php';
 
-// Load module classes
-require_once WPT_MOBBEX_PATH . 'includes/lib/modules/class-checkout.php';
+// Include necesary classes from Sdk
+require_once WPT_MOBBEX_PATH . 'vendor/mobbexco/php-plugins-sdk/src/Api.php';
+require_once WPT_MOBBEX_PATH . 'vendor/mobbexco/php-plugins-sdk/src/Platform.php';
+require_once WPT_MOBBEX_PATH . 'vendor/mobbexco/php-plugins-sdk/src/Exception.php';
+require_once WPT_MOBBEX_PATH . 'vendor/mobbexco/php-plugins-sdk/src/Modules/Checkout.php';
 
 // Include helpers
 require_once WPT_MOBBEX_PATH . 'includes/helper/class-booking-helper.php';
@@ -49,16 +49,23 @@ add_action('plugins_loaded', function () {
             $settings[str_replace('mobbex_', '', $key)] = $value;
 
     // Set platform information
-    \Mobbex\Platform::init('wp_travel', WPT_MOBBEX_VERSION, [
-        'wordpress' => get_bloginfo('version'),
-        'wp_travel' => WP_TRAVEL_VERSION,
-    ], $settings);
+    \Mobbex\Platform::init(
+        'wp_travel' . WP_TRAVEL_VERSION, 
+        WPT_MOBBEX_VERSION,
+        str_replace('www.', '', parse_url(home_url(), PHP_URL_HOST)),
+        [
+            'wordpress' => get_bloginfo('version'),
+            'wp_travel' => WP_TRAVEL_VERSION,
+            'sdk'       => class_exists('\Composer\InstalledVersions') ? \Composer\InstalledVersions::getVersion('mobbexco/php-plugins-sdk') : '',
+        ], 
+        $settings
+    );
 
     // Init api conector
     \Mobbex\Api::init();
 
     // Init controllers
-    new \WPT\Mobbex\Controllers\Payment;
+    new \Mobbex\WPT\Controllers\Payment;
 
     // Init update checker
     $updater = \Puc_v4_Factory::buildUpdateChecker('https://github.com/mobbexco/wp-travel/', __FILE__, 'wp-travel-mobbex');
