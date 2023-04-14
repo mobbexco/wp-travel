@@ -4,3 +4,6 @@
 node_modules
 package.json
 package-lock.json
+/vendor
+composer.lock
+build.sh
