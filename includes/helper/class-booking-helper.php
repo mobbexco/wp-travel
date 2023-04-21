@@ -25,8 +25,11 @@ final class Booking
         $traveller = $this->get_traveller_data($request);
 
         // Generate tokens for urls
-        $token = md5(\Mobbex\Platform::$settings['api_key'] . '|' . \Mobbex\Platform::$settings['access_token']);
+        $token = \Mobbex\Repository::generateToken();
         $nonce = isset($request['_nonce']) ? $request['_nonce'] : null;
+
+        if (!\Mobbex\Repository::validateToken($token))
+            throw new \Exception("Invalid Token: $token", 1);
 
         // Format cart items
         foreach ($wt_cart->getItems() as $item)
@@ -51,7 +54,7 @@ final class Booking
         ];
 
         // Create checkout and return
-        return new \Mobbex\Checkout(
+        return new \Mobbex\Modules\Checkout(
             $booking_id,
             $is_partial ? $wt_cart->get_total()['total_partial'] : $wt_cart->get_total()['total'],
             add_query_arg(compact('booking_id', 'token', 'nonce'), get_rest_url(null, 'wpt/mobbex/payment/callback')),
