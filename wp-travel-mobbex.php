@@ -22,12 +22,6 @@ define('WPT_MOBBEX_URL', plugin_dir_url(__FILE__));
 
 require_once 'vendor/autoload.php';
 
-// Include necesary classes from Sdk
-require_once WPT_MOBBEX_PATH . 'vendor/mobbexco/php-plugins-sdk/src/Api.php';
-require_once WPT_MOBBEX_PATH . 'vendor/mobbexco/php-plugins-sdk/src/Platform.php';
-require_once WPT_MOBBEX_PATH . 'vendor/mobbexco/php-plugins-sdk/src/Exception.php';
-require_once WPT_MOBBEX_PATH . 'vendor/mobbexco/php-plugins-sdk/src/Modules/Checkout.php';
-
 // Include helpers
 require_once WPT_MOBBEX_PATH . 'includes/helper/class-booking-helper.php';
 
@@ -50,13 +44,13 @@ add_action('plugins_loaded', function () {
 
     // Set platform information
     \Mobbex\Platform::init(
-        'wp_travel' . WP_TRAVEL_VERSION, 
+        'wp_travel', 
         WPT_MOBBEX_VERSION,
-        str_replace('www.', '', parse_url(home_url(), PHP_URL_HOST)),
+        home_url(),
         [
             'wordpress' => get_bloginfo('version'),
             'wp_travel' => WP_TRAVEL_VERSION,
-            'sdk'       => class_exists('\Composer\InstalledVersions') ? \Composer\InstalledVersions::getVersion('mobbexco/php-plugins-sdk') : '',
+            'sdk'       => class_exists('\Composer\InstalledVersions') && \Composer\InstalledVersions::isInstalled('mobbexco/php-plugins-sdk') ? \Composer\InstalledVersions::getVersion('mobbexco/php-plugins-sdk') : '',
         ], 
         $settings
     );
