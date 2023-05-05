@@ -40,7 +40,11 @@ final class Booking
             'name'           => $traveller['first_name'] . ' ' . $traveller['last_name'],
             'email'          => $traveller['email'],
             'identification' => $traveller['identification'],
-            'phone'          => $traveller['phone'],
+            'phone'          => $traveller['phone']
+        ];
+
+        // Format adresses data
+        $adresses = [
             'address'        => trim(preg_replace('/[0-9]/', '', (string) $traveller['address'])),
             'addressNumber'  => trim(preg_replace('/[^0-9]/', '', (string) $traveller['address'])),
             'zipCode'        => $traveller['postal'],
@@ -56,7 +60,8 @@ final class Booking
             add_query_arg(compact('booking_id', 'token', 'nonce'), get_rest_url(null, 'wpt/mobbex/payment/webhook')),
             $items,
             [],
-            $customer
+            $customer,
+            $adresses
         );
     }
 
