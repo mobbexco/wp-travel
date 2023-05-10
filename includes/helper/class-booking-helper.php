@@ -45,11 +45,14 @@ final class Booking
 
         // Format adresses data
         $adresses = [
-            'address'        => trim(preg_replace('/[0-9]/', '', (string) $traveller['address'])),
-            'addressNumber'  => trim(preg_replace('/[^0-9]/', '', (string) $traveller['address'])),
-            'zipCode'        => $traveller['postal'],
-            'country'        => $this->convert_country_code($traveller['country']),
-            'addressNotes'   => $traveller['note'],
+            'type'          => 'Billing',
+            'country'       => $this->convert_country_code($traveller['country']),
+            'state'         => '',
+            'city'          => $traveller['city'],
+            'zipCode'       => $traveller['postal'],
+            'street'        => trim(preg_replace('/[0-9]/', '', (string) $traveller['address'])),
+            'streetNumber'  => str_replace(preg_replace('/(\D{0})+(\d*)+$/', '', $traveller['address']), '', $traveller['address']),
+            'streetNotes'   => $traveller['note'],
         ];
 
         // Create checkout and return
@@ -95,7 +98,6 @@ final class Booking
         // First, get address from all travellers
         $first_names = isset($request['wp_travel_fname_traveller'])   ? $request['wp_travel_fname_traveller']   : [];
         $last_names  = isset($request['wp_travel_lname_traveller'])   ? $request['wp_travel_lname_traveller']   : [];
-        $countries   = isset($request['wp_travel_country_traveller']) ? $request['wp_travel_country_traveller'] : [];
         $phones      = isset($request['wp_travel_phone_traveller'])   ? $request['wp_travel_phone_traveller']   : [];
         $emails      = isset($request['wp_travel_email_traveller'])   ? $request['wp_travel_email_traveller']   : [];
     
@@ -107,13 +109,14 @@ final class Booking
         return [
             'first_name'     => isset($first_names[$first_key][0])   ? $first_names[$first_key][0]   : null,
             'last_name'      => isset($last_names[$first_key][0])    ? $last_names[$first_key][0]    : null,
-            'country'        => isset($countries[$first_key][0])     ? $countries[$first_key][0]     : null,
             'phone'          => isset($phones[$first_key][0])        ? $phones[$first_key][0]        : null,
             'email'          => isset($emails[$first_key][0])        ? $emails[$first_key][0]        : null,
+            'country'        => isset($request['wp_travel_country']) ? $request['wp_travel_country'] : null,
             'note'           => isset($request['wp_travel_note'])    ? $request['wp_travel_note']    : null,
             'postal'         => isset($request['billing_postal'])    ? $request['billing_postal']    : null,
             'identification' => isset($request['billing_dni'])       ? $request['billing_dni']       : null,
             'address'        => isset($request['wp_travel_address']) ? $request['wp_travel_address'] : null,
+            'city'           => isset($request['billing_city']) ? $request['billing_city'] : null,
         ];
     }
 
