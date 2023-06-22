@@ -92,6 +92,7 @@ add_filter('wp_travel_settings_values', function ($settings) {
         'mobbex_test_mode'      => null,
         'mobbex_api_key'        => null,
         'mobbex_access_token'   => null,
+        'mobbex_finance_trip'   => null,
     ], $settings);
 });
 
@@ -109,6 +110,7 @@ add_filter('wp_travel_block_before_save_settings', function ($settings, $request
         'mobbex_test_mode'      => !empty($request['mobbex_test_mode'])      ? 'yes'                           : null,
         'mobbex_api_key'        => !empty($request['mobbex_api_key'])        ? $request['mobbex_api_key']      : null,
         'mobbex_access_token'   => !empty($request['mobbex_access_token'])   ? $request['mobbex_access_token'] : null,
+        'mobbex_finance_trip'   => !empty($request['mobbex_finance_trip'])   ? 'yes'                           : null,
     ]);
 }, 10, 2);
 
@@ -166,3 +168,35 @@ add_filter('wp_travel_payment_status_list', function ($status) {
         ],
     ]);
 });
+
+/**
+ * Display the Mobbex financial info widget.
+ */
+function display_mobbex_finance_widget()
+{
+    //Get the mobbex settings 
+    $settings = array_filter(wptravel_get_settings(), function ($key) {
+        return str_contains($key, 'mobbex');
+    }, ARRAY_FILTER_USE_KEY); 
+    
+    //Get the trip price
+    $price = WP_Travel_Helpers_Pricings::get_price(['trip_id' => get_the_ID()]);
+    
+    //Get template data
+    $data = [
+        'price'   => $price,
+        'sources' => \Mobbex\Repository::getSources($price),
+        'style'   => [
+            'show_button'   => (isset($settings['mobbex_finance_trip']) && $settings['mobbex_finance_trip'] === 'yes'),
+            'theme'         => 'light',
+            'custom_styles' => '',
+            'text'          => 'Ver Financiación',
+            'logo'          => '',
+        ]
+    ];
+
+    //Include template
+    include_once __DIR__ . '/assets/templates/finance_widget.php';
+}
+
+add_action('wp_travel_single_trip_after_header', 'display_mobbex_finance_widget');
