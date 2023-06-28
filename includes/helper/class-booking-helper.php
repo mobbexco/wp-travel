@@ -45,12 +45,12 @@ final class Booking
 
         // Format adresses data
         $adresses = [
-            'type'          => 'Billing',
+            'type'          => 'billing',
             'country'       => \Mobbex\Repository::convertCountryCode($traveller['country']),
             'state'         => '',
             'city'          => $traveller['city'],
             'zipCode'       => $traveller['postal'],
-            'street'        => trim(preg_replace('/[0-9]/', '', (string) $traveller['address'])),
+            'street'        => trim(preg_replace('/(\D{0})+(\d*)+$/', '', $traveller['address'])),
             'streetNumber'  => str_replace(preg_replace('/(\D{0})+(\d*)+$/', '', $traveller['address']), '', $traveller['address']),
             'streetNotes'   => $traveller['note'],
         ];
