@@ -2,8 +2,6 @@
 
 namespace Mobbex\WPT\Helper;
 
-use Mobbex\Platform;
-
 defined('ABSPATH') || exit;
 
 final class Booking
@@ -54,8 +52,8 @@ final class Booking
         return new \Mobbex\Modules\Checkout(
             $booking_id,
             $is_partial ? $wt_cart->get_total()['total_partial'] : $wt_cart->get_total()['total'],
-            add_query_arg(compact('booking_id', 'token', 'nonce'), get_rest_url(null, 'wpt/mobbex/payment/callback')),
-            $this->get_endpoint_url(compact('booking_id', 'token', 'nonce'), 'wpt/mobbex/payment/webhook'),
+            $this->get_endpoint_url('wpt/mobbex/payment/callback', compact('booking_id', 'token', 'nonce')),
+            $this->get_endpoint_url('wpt/mobbex/payment/webhook', compact('booking_id', 'token', 'nonce')),
             $items,
             [],
             $customer
@@ -64,13 +62,19 @@ final class Booking
 
     /**
      * Add Xdebug as query if debug mode is active
+     * 
+     * @param string $endpoint
+     * @param array  $query
+     * 
+     * @return string new url query string (unescaped)
+     * 
      */
-    public function get_endpoint_url($query, $rest)
+    public function get_endpoint_url($endpoint, $query = [])
     {
         if (\Mobbex\Platform::$settings['debug_mode'])
             $query['XDEBUG_SESSION_START'] = 'PHPSTORM';
         
-        return add_query_arg($query, get_rest_url(null, $rest));
+        return add_query_arg($query, get_rest_url(null, $endpoint));
     }
 
     /**
