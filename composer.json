@@ -1,6 +1,6 @@
 {
     "require": {
-        "mobbexco/php-plugins-sdk": "^1.0"
+        "mobbexco/php-plugins-sdk": "1.3.0"
     },
     "autoload": {
         "psr-4": {
