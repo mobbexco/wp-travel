@@ -46,14 +46,12 @@
     </div>
 </div>
 
-<?php if ($data['style']['show_button']) : ?>
-    <button id="mbbxProductBtn" class="button alt">
-        <?php if ($data['style']['logo']) : ?>
-            <img src="<?= $data['style']['logo'] ?>" alt="" width="40" height="40" style="margin-right: 15px; border-radius: 40px;">
-        <?php endif; ?>
-        <?= $data['style']['text'] ?>
-    </button>
-<?php endif; ?>
+<button id="mbbxProductBtn" class="button alt">
+    <?php if ($data['style']['logo']) : ?>
+        <img src="<?= $data['style']['logo'] ?>" alt="" width="40" height="40" style="margin-right: 15px; border-radius: 40px;">
+    <?php endif; ?>
+    <?= $data['style']['text'] ?>
+</button>
 
 <!-- STYLES -->
 <style>

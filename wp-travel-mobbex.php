@@ -172,23 +172,24 @@ add_filter('wp_travel_payment_status_list', function ($status) {
 /**
  * Display the Mobbex financial info widget.
  */
-function display_mobbex_finance_widget()
-{
+add_action('wp_travel_single_trip_after_header', function() {
+    
     //Get the mobbex settings 
-    $settings = array_filter(wptravel_get_settings(), function ($key) {
-        return str_contains($key, 'mobbex');
-    }, ARRAY_FILTER_USE_KEY); 
-    
+    $settings = \Mobbex\Platform::$settings;
+
+    //return if finance widget is not activated
+    if(!isset($settings['finance_trip']) || (isset($settings['finance_trip']) && $settings['finance_trip'] !== 'yes'))
+        return;
+
     //Get the trip price
-    $price = WP_Travel_Helpers_Pricings::get_price(['trip_id' => get_the_ID()]);
-    
+    $price = \WP_Travel_Helpers_Pricings::get_price(['trip_id' => get_the_ID()]);
+
     //Get template data
     $data = [
         'price'   => $price,
         'sources' => \Mobbex\Repository::getSources($price),
         'style'   => [
-            'show_button'   => (isset($settings['mobbex_finance_trip']) && $settings['mobbex_finance_trip'] === 'yes'),
-            'theme'         => 'light',
+            'theme'         => $settings['theme'],
             'custom_styles' => '',
             'text'          => 'Ver Financiación',
             'logo'          => '',
@@ -197,6 +198,4 @@ function display_mobbex_finance_widget()
 
     //Include template
     include_once __DIR__ . '/assets/templates/finance_widget.php';
-}
-
-add_action('wp_travel_single_trip_after_header', 'display_mobbex_finance_widget');
+});
