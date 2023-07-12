@@ -28,9 +28,6 @@ final class Booking
         $token = \Mobbex\Repository::generateToken();
         $nonce = isset($request['_nonce']) ? $request['_nonce'] : null;
 
-        if (!\Mobbex\Repository::validateToken($token))
-            throw new \Exception("Invalid Token: $token", 1);
-
         // Format cart items
         foreach ($wt_cart->getItems() as $item)
             $items[] = [
