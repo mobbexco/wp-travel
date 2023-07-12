@@ -92,6 +92,7 @@ add_filter('wp_travel_settings_values', function ($settings) {
         'mobbex_test_mode'      => null,
         'mobbex_api_key'        => null,
         'mobbex_access_token'   => null,
+        'mobbex_multicard'      => null,
     ], $settings);
 });
 
@@ -109,6 +110,7 @@ add_filter('wp_travel_block_before_save_settings', function ($settings, $request
         'mobbex_test_mode'      => !empty($request['mobbex_test_mode'])      ? 'yes'                           : null,
         'mobbex_api_key'        => !empty($request['mobbex_api_key'])        ? $request['mobbex_api_key']      : null,
         'mobbex_access_token'   => !empty($request['mobbex_access_token'])   ? $request['mobbex_access_token'] : null,
+        'mobbex_multicard'      => !empty($request['mobbex_multicard'])      ? 'yes'                           : null,
     ]);
 }, 10, 2);
 

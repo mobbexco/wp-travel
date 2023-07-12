@@ -55,6 +55,7 @@
                 <Option type="control" name="mobbex_test_mode" value={props.configs.mobbex_test_mode} label="Activar modo de pruebas" show={props.configs.payment_option_mobbex}/>
                 <Option type="text" name="mobbex_api_key" value={props.configs.mobbex_api_key} label="Clave de API" show={props.configs.payment_option_mobbex}/>
                 <Option type="text" name="mobbex_access_token" value={props.configs.mobbex_access_token} label="Token de acceso" show={props.configs.payment_option_mobbex}/>
+                <Option type="control" name="mobbex_multicard" value={props.configs.mobbex_multicard} label="Multicard" description="Permite pagar usando múltiples tarjetas"/>
             </React.Fragment>
         );
     }
