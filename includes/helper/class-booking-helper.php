@@ -45,12 +45,12 @@ final class Booking
 
         // Format adresses data
         $adresses = [
-            'type'          => 'Billing',
-            'country'       => $this->convert_country_code($traveller['country']),
+            'type'          => 'billing',
+            'country'       => \Mobbex\Repository::convertCountryCode($traveller['country']),
             'state'         => '',
             'city'          => $traveller['city'],
             'zipCode'       => $traveller['postal'],
-            'street'        => trim(preg_replace('/[0-9]/', '', (string) $traveller['address'])),
+            'street'        => trim(preg_replace('/(\D{0})+(\d*)+$/', '', $traveller['address'])),
             'streetNumber'  => str_replace(preg_replace('/(\D{0})+(\d*)+$/', '', $traveller['address']), '', $traveller['address']),
             'streetNotes'   => $traveller['note'],
         ];
@@ -118,19 +118,5 @@ final class Booking
             'address'        => isset($request['wp_travel_address']) ? $request['wp_travel_address'] : null,
             'city'           => isset($request['billing_city']) ? $request['billing_city'] : null,
         ];
-    }
-
-    /**
-     * Convert a booking country code to 3-letter ISO code.
-     * 
-     * @param string $code 2-Letter ISO code.
-     * 
-     * @return string|null
-     */
-    public function convert_country_code($code)
-    {
-        $countries = include('country-codes.php') ?: [];
-
-        return isset($countries[$code]) ? $countries[$code] : null;
     }
 }
