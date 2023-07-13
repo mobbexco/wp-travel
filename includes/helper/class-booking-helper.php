@@ -2,8 +2,6 @@
 
 namespace Mobbex\WPT\Helper;
 
-use Mobbex\Platform;
-
 defined('ABSPATH') || exit;
 
 final class Booking
@@ -14,7 +12,7 @@ final class Booking
      * @param int $booking_id
      * @param bool $is_partial True if the payment will to be partial.
      * 
-     * @return \Mobbex\Checkout
+     * @return \Mobbex\Modules\Checkout
      */
     public function create_checkout($booking_id, $is_partial = false)
     {
@@ -42,35 +40,49 @@ final class Booking
             'name'           => $traveller['first_name'] . ' ' . $traveller['last_name'],
             'email'          => $traveller['email'],
             'identification' => $traveller['identification'],
-            'phone'          => $traveller['phone'],
-            'address'        => trim(preg_replace('/[0-9]/', '', (string) $traveller['address'])),
-            'addressNumber'  => trim(preg_replace('/[^0-9]/', '', (string) $traveller['address'])),
-            'zipCode'        => $traveller['postal'],
-            'country'        => $this->convert_country_code($traveller['country']),
-            'addressNotes'   => $traveller['note'],
+            'phone'          => $traveller['phone']
+        ];
+
+        // Format adresses data
+        $adresses = [
+            'type'          => 'billing',
+            'country'       => \Mobbex\Repository::convertCountryCode($traveller['country']),
+            'state'         => '',
+            'city'          => $traveller['city'],
+            'zipCode'       => $traveller['postal'],
+            'street'        => trim(preg_replace('/(\D{0})+(\d*)+$/', '', $traveller['address'])),
+            'streetNumber'  => str_replace(preg_replace('/(\D{0})+(\d*)+$/', '', $traveller['address']), '', $traveller['address']),
+            'streetNotes'   => $traveller['note'],
         ];
 
         // Create checkout and return
-        return new \Mobbex\Checkout(
+        return new \Mobbex\Modules\Checkout(
             $booking_id,
             $is_partial ? $wt_cart->get_total()['total_partial'] : $wt_cart->get_total()['total'],
-            add_query_arg(compact('booking_id', 'token', 'nonce'), get_rest_url(null, 'wpt/mobbex/payment/callback')),
-            $this->get_endpoint_url(compact('booking_id', 'token', 'nonce'), 'wpt/mobbex/payment/webhook'),
+            $this->get_endpoint_url('wpt/mobbex/payment/callback', compact('booking_id', 'token', 'nonce')),
+            $this->get_endpoint_url('wpt/mobbex/payment/webhook', compact('booking_id', 'token', 'nonce')),
             $items,
             [],
-            $customer
+            $customer,
+            $adresses
         );
     }
 
     /**
      * Add Xdebug as query if debug mode is active
+     * 
+     * @param string $endpoint
+     * @param array  $query
+     * 
+     * @return string new url query string (unescaped)
+     * 
      */
-    public function get_endpoint_url($query, $rest)
+    public function get_endpoint_url($endpoint, $query = [])
     {
         if (\Mobbex\Platform::$settings['debug_mode'])
             $query['XDEBUG_SESSION_START'] = 'PHPSTORM';
 
-        return add_query_arg($query, get_rest_url(null, $rest));
+        return add_query_arg($query, get_rest_url(null, $endpoint));
     }
 
     /**
@@ -103,7 +115,6 @@ final class Booking
         // First, get address from all travellers
         $first_names = isset($request['wp_travel_fname_traveller'])   ? $request['wp_travel_fname_traveller']   : [];
         $last_names  = isset($request['wp_travel_lname_traveller'])   ? $request['wp_travel_lname_traveller']   : [];
-        $countries   = isset($request['wp_travel_country_traveller']) ? $request['wp_travel_country_traveller'] : [];
         $phones      = isset($request['wp_travel_phone_traveller'])   ? $request['wp_travel_phone_traveller']   : [];
         $emails      = isset($request['wp_travel_email_traveller'])   ? $request['wp_travel_email_traveller']   : [];
     
@@ -115,27 +126,14 @@ final class Booking
         return [
             'first_name'     => isset($first_names[$first_key][0])   ? $first_names[$first_key][0]   : null,
             'last_name'      => isset($last_names[$first_key][0])    ? $last_names[$first_key][0]    : null,
-            'country'        => isset($countries[$first_key][0])     ? $countries[$first_key][0]     : null,
             'phone'          => isset($phones[$first_key][0])        ? $phones[$first_key][0]        : null,
             'email'          => isset($emails[$first_key][0])        ? $emails[$first_key][0]        : null,
+            'country'        => isset($request['wp_travel_country']) ? $request['wp_travel_country'] : null,
             'note'           => isset($request['wp_travel_note'])    ? $request['wp_travel_note']    : null,
             'postal'         => isset($request['billing_postal'])    ? $request['billing_postal']    : null,
             'identification' => isset($request['billing_dni'])       ? $request['billing_dni']       : null,
             'address'        => isset($request['wp_travel_address']) ? $request['wp_travel_address'] : null,
+            'city'           => isset($request['billing_city']) ? $request['billing_city'] : null,
         ];
-    }
-
-    /**
-     * Convert a booking country code to 3-letter ISO code.
-     * 
-     * @param string $code 2-Letter ISO code.
-     * 
-     * @return string|null
-     */
-    public function convert_country_code($code)
-    {
-        $countries = include('country-codes.php') ?: [];
-
-        return isset($countries[$code]) ? $countries[$code] : null;
     }
 }

@@ -45,13 +45,13 @@ add_action('plugins_loaded', function () {
 
     // Set platform information
     \Mobbex\Platform::init(
-        'wp_travel' . WP_TRAVEL_VERSION, 
+        'wp_travel', 
         WPT_MOBBEX_VERSION,
-        str_replace('www.', '', parse_url(home_url(), PHP_URL_HOST)),
+        home_url(),
         [
             'wordpress' => get_bloginfo('version'),
             'wp_travel' => WP_TRAVEL_VERSION,
-            'sdk'       => class_exists('\Composer\InstalledVersions') ? \Composer\InstalledVersions::getVersion('mobbexco/php-plugins-sdk') : '',
+            'sdk'       => class_exists('\Composer\InstalledVersions') && \Composer\InstalledVersions::isInstalled('mobbexco/php-plugins-sdk') ? \Composer\InstalledVersions::getVersion('mobbexco/php-plugins-sdk') : '',
         ], 
         $settings
     );
@@ -93,6 +93,8 @@ add_filter('wp_travel_settings_values', function ($settings) {
         'mobbex_test_mode'      => null,
         'mobbex_api_key'        => null,
         'mobbex_access_token'   => null,
+        'mobbex_finance_trip'   => null,
+        'mobbex_multicard'      => null,
     ], $settings);
 });
 
@@ -110,6 +112,8 @@ add_filter('wp_travel_block_before_save_settings', function ($settings, $request
         'mobbex_test_mode'      => !empty($request['mobbex_test_mode'])      ? 'yes'                           : null,
         'mobbex_api_key'        => !empty($request['mobbex_api_key'])        ? $request['mobbex_api_key']      : null,
         'mobbex_access_token'   => !empty($request['mobbex_access_token'])   ? $request['mobbex_access_token'] : null,
+        'mobbex_finance_trip'   => !empty($request['mobbex_finance_trip'])   ? 'yes'                           : null,
+        'mobbex_multicard'      => !empty($request['mobbex_multicard'])      ? 'yes'                           : null,
     ]);
 }, 10, 2);
 
@@ -166,4 +170,35 @@ add_filter('wp_travel_payment_status_list', function ($status) {
             'text'  => __('Sospecha de fraude', 'wp-travel-mobbex'),
         ],
     ]);
+});
+
+/**
+ * Display the Mobbex financial info widget.
+ */
+add_action('wp_travel_single_trip_after_header', function() {
+    
+    //Get the mobbex settings 
+    $settings = \Mobbex\Platform::$settings;
+
+    //return if finance widget is not activated
+    if(!isset($settings['finance_trip']) || (isset($settings['finance_trip']) && $settings['finance_trip'] !== 'yes'))
+        return;
+
+    //Get the trip price
+    $price = \WP_Travel_Helpers_Pricings::get_price(['trip_id' => get_the_ID()]);
+
+    //Get template data
+    $data = [
+        'price'   => $price,
+        'sources' => \Mobbex\Repository::getSources($price),
+        'style'   => [
+            'theme'         => $settings['theme'],
+            'custom_styles' => '',
+            'text'          => 'Ver Financiación',
+            'logo'          => '',
+        ]
+    ];
+
+    //Include template
+    include_once __DIR__ . '/assets/templates/finance_widget.php';
 });
