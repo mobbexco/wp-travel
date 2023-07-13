@@ -20,6 +20,7 @@ define('WPT_MOBBEX_VERSION', '1.0.0');
 define('WPT_MOBBEX_PATH', plugin_dir_path(__FILE__));
 define('WPT_MOBBEX_URL', plugin_dir_url(__FILE__));
 
+// require Sdk classes
 require_once __DIR__ . '/vendor/autoload.php';
 
 // Include helpers
