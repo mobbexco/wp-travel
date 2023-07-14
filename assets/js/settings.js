@@ -67,6 +67,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             null,
             React.createElement(Option, { type: 'control', name: 'payment_option_mobbex', value: props.configs.payment_option_mobbex, label: 'Activar Mobbex', description: 'Haga clic para activar la opci\xF3n de pago' }),
             React.createElement(Option, { type: 'control', name: 'mobbex_test_mode', value: props.configs.mobbex_test_mode, label: 'Activar modo de pruebas', show: props.configs.payment_option_mobbex }),
+            React.createElement(Option, { type: 'control', name: 'mobbex_debug_mode', value: props.configs.mobbex_debug_mode, label: 'Activar modo de depuración', show: props.configs.payment_option_mobbex }),
             React.createElement(Option, { type: 'text', name: 'mobbex_api_key', value: props.configs.mobbex_api_key, label: 'Clave de API', show: props.configs.payment_option_mobbex }),
             React.createElement(Option, { type: 'text', name: 'mobbex_access_token', value: props.configs.mobbex_access_token, label: 'Token de acceso', show: props.configs.payment_option_mobbex }),
             React.createElement(Option, { type: 'control', name: 'mobbex_finance_trip', value: props.configs.mobbex_finance_trip, label: 'Financiaci\xF3n en Viaje', description: 'Mostrar el bot\xF3nde financiaci\xF3n con planes de pago en la p\xE1gina del viaje.' }),
