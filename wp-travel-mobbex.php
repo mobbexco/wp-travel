@@ -3,7 +3,7 @@
  * Plugin Name: Mobbex for WP-Travel
  * Plugin URI: https://github.com/mobbexco/wp-travel
  * Description: The best choice for a Travel Agency, Tour Operator or Destination Management Company, wanting to manage packages more efficiently & increase sales.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Mobbex
  * Author URI: https://mobbex.com/
  * Requires PHP: 5.6
@@ -16,7 +16,7 @@
 defined('ABSPATH') || exit;
 
 // Define constants
-define('WPT_MOBBEX_VERSION', '1.0.0');
+define('WPT_MOBBEX_VERSION', '1.1.0');
 define('WPT_MOBBEX_PATH', plugin_dir_path(__FILE__));
 define('WPT_MOBBEX_URL', plugin_dir_url(__FILE__));
 
