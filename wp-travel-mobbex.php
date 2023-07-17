@@ -90,7 +90,7 @@ add_filter('wp_travel_payment_gateway_lists', function ($gateways) {
 add_filter('wp_travel_settings_values', function ($settings) {
     return array_merge([
         'payment_option_mobbex' => null,
-        'mobbex_test_mode'      => null,
+        'mobbex_test'           => null,
         'mobbex_debug_mode'     => null,
         'mobbex_api_key'        => null,
         'mobbex_access_token'   => null,
@@ -110,7 +110,7 @@ add_filter('wp_travel_settings_values', function ($settings) {
 add_filter('wp_travel_block_before_save_settings', function ($settings, $request) {
     return array_merge($settings, [
         'payment_option_mobbex' => !empty($request['payment_option_mobbex']) ? 'yes'                           : null,
-        'mobbex_test_mode'      => !empty($request['mobbex_test_mode'])      ? 'yes'                           : null,
+        'mobbex_test'           => !empty($request['mobbex_test'])           ? 'yes'                           : null,
         'mobbex_debug_mode'     => !empty($request['mobbex_debug_mode'])     ? 'yes'                           : null,
         'mobbex_api_key'        => !empty($request['mobbex_api_key'])        ? $request['mobbex_api_key']      : null,
         'mobbex_access_token'   => !empty($request['mobbex_access_token'])   ? $request['mobbex_access_token'] : null,
