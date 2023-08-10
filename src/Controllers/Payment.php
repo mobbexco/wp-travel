@@ -1,12 +1,10 @@
 <?php
 
-namespace Mobbex\WPT\Controllers;
-
-defined('ABSPATH') || exit;
+namespace Mobbex\WPT\Checkout\Controllers;
 
 final class Payment
 {
-    /** @var \Mobbex\WPT\Helper\Booking */
+    /** @var \Mobbex\WPT\Checkout\Helper\Booking */
     public $helper;
 
     /**
@@ -16,7 +14,7 @@ final class Payment
      */
     public function __construct()
     {
-        $this->helper = new \Mobbex\WPT\Helper\Booking;
+        $this->helper = new \Mobbex\WPT\Checkout\Helper\Booking;
 
         add_action('wp_travel_after_frontend_booking_save', [$this, 'process']);
         add_action('wp_travel_before_partial_payment_complete', [$this, 'process'], 10, 2);
