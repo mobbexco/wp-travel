@@ -23,9 +23,6 @@ define('WPT_MOBBEX_URL', plugin_dir_url(__FILE__));
 // Include all files using autoload
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Include external module classes
-require_once WPT_MOBBEX_PATH . 'includes/ext/updater/plugin-update-checker.php';
-
 /**
  * Init plugin.
  */
