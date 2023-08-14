@@ -20,17 +20,8 @@ define('WPT_MOBBEX_VERSION', '1.1.0');
 define('WPT_MOBBEX_PATH', plugin_dir_path(__FILE__));
 define('WPT_MOBBEX_URL', plugin_dir_url(__FILE__));
 
-// require Sdk classes
+// Include all files using autoload
 require_once __DIR__ . '/vendor/autoload.php';
-
-// Include helpers
-require_once WPT_MOBBEX_PATH . 'includes/helper/class-booking-helper.php';
-
-// Include controllers
-require_once WPT_MOBBEX_PATH . 'controllers/payment.php';
-
-// Include external module classes
-require_once WPT_MOBBEX_PATH . 'includes/ext/updater/plugin-update-checker.php';
 
 /**
  * Init plugin.
@@ -60,7 +51,7 @@ add_action('plugins_loaded', function () {
     \Mobbex\Api::init();
 
     // Init controllers
-    new \Mobbex\WPT\Controllers\Payment;
+    new \Mobbex\WPT\Checkout\Controllers\Payment;
 
     // Init update checker
     $updater = \Puc_v4_Factory::buildUpdateChecker('https://github.com/mobbexco/wp-travel/', __FILE__, 'wp-travel-mobbex');
@@ -124,7 +115,7 @@ add_filter('wp_travel_block_before_save_settings', function ($settings, $request
  */
 add_action('admin_enqueue_scripts', function () {
     if (WP_Travel::is_page('settings', true))
-        wp_enqueue_script('mbbx-settings-js', WPT_MOBBEX_URL . 'assets/js/settings.js', null, WPT_MOBBEX_VERSION);
+        wp_enqueue_script('mbbx-settings-js', WPT_MOBBEX_URL . 'src/view/settings.js', null, WPT_MOBBEX_VERSION);
 });
 
 /**
@@ -202,5 +193,5 @@ add_action('wp_travel_single_trip_after_header', function() {
     ];
 
     //Include template
-    include_once __DIR__ . '/assets/templates/finance_widget.php';
+    include_once WPT_MOBBEX_PATH . '/src/view/finance_widget.php';
 });

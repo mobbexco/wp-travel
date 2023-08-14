@@ -1,8 +1,6 @@
 <?php
 
-namespace Mobbex\WPT\Helper;
-
-defined('ABSPATH') || exit;
+namespace Mobbex\WPT\Checkout\Helper;
 
 final class Booking
 {

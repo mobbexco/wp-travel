@@ -1,10 +1,11 @@
 {
     "require": {
-        "mobbexco/php-plugins-sdk": "1.3.0"
+        "mobbexco/php-plugins-sdk": "1.3.0",
+        "yahnis-elsts/plugin-update-checker": "v4.11"
     },
     "autoload": {
         "psr-4": {
-            "Mobbex\\WPT\\Checkout\\": ""
+            "Mobbex\\WPT\\Checkout\\": "src"
         }
     }
 }
