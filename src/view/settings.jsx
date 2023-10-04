@@ -56,8 +56,8 @@
                 <Option type="control" name="mobbex_debug_mode" value={props.configs.mobbex_debug_mode} label="Activar modo de depuración" show={props.configs.payment_option_mobbex}/>
                 <Option type="text" name="mobbex_api_key" value={props.configs.mobbex_api_key} label="Clave de API" show={props.configs.payment_option_mobbex}/>
                 <Option type="text" name="mobbex_access_token" value={props.configs.mobbex_access_token} label="Token de acceso" show={props.configs.payment_option_mobbex}/>
-                <Option type="control" name="mobbex_finance_trip" value={props.configs.mobbex_finance_trip} label="Financiación en Viaje" description="Mostrar el botón de financiación con planes de pago en la página del viaje."/>
-                <Option type="control" name="mobbex_multicard" value={props.configs.mobbex_multicard} label="Multicard" description="Permite pagar usando múltiples tarjetas"/>
+                <Option type="control" name="mobbex_finance_trip" value={props.configs.mobbex_finance_trip} label="Financiación en Viaje" description="Mostrar el botón de financiación con planes de pago en la página del viaje." show={props.configs.payment_option_mobbex}/>
+                <Option type="control" name="mobbex_multicard" value={props.configs.mobbex_multicard} label="Multicard" description="Permite pagar usando múltiples tarjetas" show={props.configs.payment_option_mobbex}/>
             </React.Fragment>
         );
     }
