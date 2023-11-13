@@ -2,8 +2,6 @@
 
 namespace Mobbex\WPT\Helper;
 
-use Mobbex\Platform;
-
 defined('ABSPATH') || exit;
 
 final class Booking
