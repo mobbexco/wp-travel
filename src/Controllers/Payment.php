@@ -70,7 +70,7 @@ final class Payment
             !empty($_GET['status']) 
             && !empty($_GET['booking_id'])
             && !empty($_GET['token'])
-            && $_GET['token'] == md5(\Mobbex\Platform::$settings['api_key'] . '|' . \Mobbex\Platform::$settings['access_token'])
+            && \Mobbex\Repository::validateToken($_GET['token'])
             && $_GET['status'] > 1
             && $_GET['status'] < 400
         );
@@ -103,7 +103,7 @@ final class Payment
             die('Error: Invalid webhook format.');
 
         // Exit if provided token does not match
-        if ($_REQUEST['token'] != md5(\Mobbex\Platform::$settings['api_key'] . '|' . \Mobbex\Platform::$settings['access_token']))
+        if (\Mobbex\Repository::validateToken($_REQUEST['token']))
             die('Error: Missmatch token.');
 
         $data = $request['data'];

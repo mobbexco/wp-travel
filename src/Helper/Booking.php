@@ -21,7 +21,7 @@ final class Booking
         $traveller = $this->get_traveller_data($request);
 
         // Generate tokens for urls
-        $token = md5(\Mobbex\Platform::$settings['api_key'] . '|' . \Mobbex\Platform::$settings['access_token']);
+        $token = \Mobbex\Repository::generateToken();
         $nonce = isset($request['_nonce']) ? $request['_nonce'] : null;
 
         // Format cart items
