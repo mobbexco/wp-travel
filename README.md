@@ -56,5 +56,5 @@ Ejecute los siguientes comandos para construir un entorno capaz de compilar los 
     ```
 3. Ejecute la librería para que compile los archivos dinámicamente:
     ```
-    npx babel --watch assets/js/src --out-dir assets/js --presets react-app/prod
+    npx babel --watch src/view/ --out-dir src/view/ --presets react-app/prod
     ```
